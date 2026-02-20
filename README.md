@@ -61,16 +61,34 @@ JOURNAL.md      Project diary (the fun parts)
 
 See [docs/hardware.md](docs/hardware.md) for the full parts list and [docs/assembly.md](docs/assembly.md) for build instructions.
 
+## Software Stack (Pi 4)
+
+| Component | Purpose |
+|-----------|---------|
+| MediaMTX | RTSP/WebRTC camera server |
+| Restreamer | Video restreaming to Twitch |
+| Netdata | System monitoring |
+| Docker | Container runtime for Restreamer et al. |
+| Tailscale | Remote VPN access |
+
+The Pi Zero runs a minimal headless setup — just SSH and the camera.
+
+## Project History
+
+| When | What |
+|------|------|
+| Mid 2023 | Pi 4 set up, Docker stack deployed (Restreamer, Frigate NVR, monitoring) |
+| Early 2024 | External SSD added for video storage |
+| Spring 2025 | MediaMTX added, ~25 days of continuous recording captured |
+| Early 2026 | Pi Zero W added with NoIR camera, IR-LED research, birdhouse construction started |
+
 ## Status
 
-🚧 **Work in progress** — We're still building this thing. The cameras work, the streaming pipeline is being set up, and the birdhouse construction is underway.
+🚧 **Work in progress** — Cameras work, streaming pipeline is being configured, birdhouse construction is underway.
 
 ## Credits
 
 Built by humans (and one AI) in Vienna, Austria.
-- **martin** — Software, networking, remote admin
-- **thomas** — Hardware, construction, on-site
-- **mox** — Documentation, research, AI assistant ([OpenClaw](https://openclaw.ai))
 
 ## License
 

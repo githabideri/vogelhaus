@@ -118,6 +118,13 @@ do_check() {
         # WiFi down — can we reach peer via USB?
         if ping -c 1 -W 2 "$PEER_USB_IP" &>/dev/null; then
             activate_failover
+
+            # Verify failover actually provides internet
+            sleep 2
+            if ! ping -c 1 -W 3 "$CHECK_HOST" &>/dev/null; then
+                log "FAILOVER: USB route set but still no internet (router down?), reverting"
+                deactivate_failover
+            fi
         else
             log "WARNING: WiFi down AND USB peer unreachable"
             deactivate_failover
