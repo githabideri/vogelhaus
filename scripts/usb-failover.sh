@@ -80,11 +80,21 @@ activate_failover() {
 
     log "FAILOVER: local WiFi down, routing via USB peer ($PEER_USB_IP)"
 
-    # Add default route via USB peer with low metric (preferred)
-    ip route add default via "$PEER_USB_IP" dev "$USB_IFACE" metric "$METRIC_FAILOVER" 2>/dev/null || true
+    # Get our local USB IP for source-based routing
+    local local_usb_ip
+    local_usb_ip=$(ip -4 addr show "$USB_IFACE" 2>/dev/null | grep -oP 'inet \K[\d.]+')
+
+    # Add default route via USB peer with correct source IP
+    # Source IP MUST be the USB address, not the WiFi address — otherwise
+    # return packets get routed via LAN instead of back through USB
+    if [[ -n "$local_usb_ip" ]]; then
+        ip route replace default via "$PEER_USB_IP" dev "$USB_IFACE" src "$local_usb_ip" metric "$METRIC_FAILOVER" 2>/dev/null || true
+    else
+        ip route replace default via "$PEER_USB_IP" dev "$USB_IFACE" metric "$METRIC_FAILOVER" 2>/dev/null || true
+    fi
 
     set_state "failover"
-    log "FAILOVER: active"
+    log "FAILOVER: active (local USB IP: ${local_usb_ip:-unknown})"
 }
 
 deactivate_failover() {
@@ -112,7 +122,8 @@ do_check() {
     fi
 
     # Check if local WiFi provides internet
-    if check_internet_via "$WLAN_IFACE"; then
+    # WiFi must have a default route AND be able to reach the internet
+    if ip route show default | grep -q "$WLAN_IFACE" && check_internet_via "$WLAN_IFACE"; then
         deactivate_failover
     else
         # WiFi down — can we reach peer via USB?

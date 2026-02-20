@@ -106,15 +106,27 @@ To simulate WiFi failure:
 # Disconnect WiFi temporarily
 sudo ip link set wlan0 down
 
-# Watch failover engage (check logs)
-journalctl -t usb-failover -f
+# Run failover check (or wait for timer)
+sudo usb-failover.sh check
 
 # Verify internet still works (via USB peer)
 ping 1.1.1.1
 
 # Restore WiFi
-sudo ip link set wlan0 up
+# NetworkManager: use nmcli (ip link set up alone won't reconnect)
+sudo nmcli device connect wlan0
+# dhcpcd: ip link set wlan0 up suffices
+
+# Run check again (or wait for timer) — should recover
+sudo usb-failover.sh check
 ```
+
+**Important routing note:** The failover route uses `src <usb-ip>` to ensure return
+packets come back through USB, not through the LAN. Without this, NAT de-translation
+on the peer routes replies via LAN instead of USB, causing 100% packet loss.
+
+If the peer Pi runs Docker, you also need FORWARD rules allowing USB traffic through
+Docker's firewall (FORWARD policy is DROP with Docker). See the `rc.local` setup below.
 
 ## Limitations
 
