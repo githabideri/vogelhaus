@@ -183,41 +183,47 @@ do_status() {
     ip route show | grep -E "default|$USB_IFACE" | sed 's/^/  /'
 }
 
+run_daemon() {
+    log "Starting failover daemon (check every ${CHECK_INTERVAL}s)"
+    while true; do
+        do_check
+        sleep "$CHECK_INTERVAL"
+    done
+}
+
 install_systemd() {
-    cat > /etc/systemd/system/usb-failover.service << 'EOF'
+    cat > /etc/systemd/system/usb-failover.service << EOF
 [Unit]
-Description=USB WiFi Failover Check
+Description=USB WiFi Failover Service
 After=network-online.target
 Wants=network-online.target
 
 [Service]
-Type=oneshot
-ExecStart=/usr/local/bin/usb-failover.sh
-EOF
-
-    cat > /etc/systemd/system/usb-failover.timer << EOF
-[Unit]
-Description=USB WiFi Failover Timer
-
-[Timer]
-OnBootSec=60
-OnUnitActiveSec=${CHECK_INTERVAL}s
-AccuracySec=5s
+Type=simple
+ExecStart=/usr/local/bin/usb-failover.sh --daemon
+Restart=always
+RestartSec=10
 
 [Install]
-WantedBy=timers.target
+WantedBy=multi-user.target
 EOF
 
     if [[ "$(realpath "$0")" != "/usr/local/bin/usb-failover.sh" ]]; then
         cp "$0" /usr/local/bin/usb-failover.sh
         chmod +x /usr/local/bin/usb-failover.sh
     fi
+
+    # Remove old timer if present
+    systemctl disable --now usb-failover.timer 2>/dev/null || true
+    rm -f /etc/systemd/system/usb-failover.timer
+
     systemctl daemon-reload
-    systemctl enable --now usb-failover.timer
-    log "Installed and started usb-failover timer (every ${CHECK_INTERVAL}s)"
+    systemctl enable --now usb-failover.service
+    log "Installed and started usb-failover service (check every ${CHECK_INTERVAL}s)"
 }
 
 uninstall_systemd() {
+    systemctl disable --now usb-failover.service 2>/dev/null || true
     systemctl disable --now usb-failover.timer 2>/dev/null || true
     rm -f /etc/systemd/system/usb-failover.service
     rm -f /etc/systemd/system/usb-failover.timer
@@ -228,9 +234,10 @@ uninstall_systemd() {
 }
 
 case "${1:-check}" in
-    --install)  install_systemd ;;
+    --daemon)    run_daemon ;;
+    --install)   install_systemd ;;
     --uninstall) uninstall_systemd ;;
-    --status)   do_status ;;
-    check|"")   do_check ;;
-    *)          echo "Usage: $0 [--install|--uninstall|--status]"; exit 1 ;;
+    --status)    do_status ;;
+    check|"")    do_check ;;
+    *)           echo "Usage: $0 [--daemon|--install|--uninstall|--status]"; exit 1 ;;
 esac

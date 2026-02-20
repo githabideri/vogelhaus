@@ -73,7 +73,23 @@ PEER_USB_IP="169.254.246.156"
 CHECK_INTERVAL=30
 ```
 
-### 3. Install
+### 3. SSH Keys Between Pis
+
+The Pis should have SSH key access to each other for easy administration:
+
+```bash
+# On each Pi:
+ssh-keygen -t ed25519 -N '' -f ~/.ssh/id_ed25519
+
+# Deploy keys (from Pi 4):
+ssh-copy-id vb-light@169.254.246.2    # via USB
+ssh-copy-id vb-light@<ZERO_LAN_IP>     # via LAN
+
+# Deploy keys (from Pi Zero):
+ssh-copy-id vogl@169.254.246.156      # via USB
+```
+
+### 4. Install
 
 ```bash
 sudo ./scripts/usb-failover.sh --install
@@ -81,10 +97,10 @@ sudo ./scripts/usb-failover.sh --install
 
 This:
 - Copies the script to `/usr/local/bin/`
-- Creates a systemd timer that runs every 30 seconds
-- Enables and starts the timer
+- Creates a systemd service that checks every 30 seconds
+- Enables and starts the service (survives reboot)
 
-### 4. Verify
+### 5. Verify
 
 ```bash
 sudo usb-failover.sh --status
@@ -92,7 +108,7 @@ sudo usb-failover.sh --status
 
 Shows current state, link status, peer reachability, and routes.
 
-### 5. Uninstall
+### 6. Uninstall
 
 ```bash
 sudo usb-failover.sh --uninstall
@@ -127,6 +143,21 @@ on the peer routes replies via LAN instead of USB, causing 100% packet loss.
 
 If the peer Pi runs Docker, you also need FORWARD rules allowing USB traffic through
 Docker's firewall (FORWARD policy is DROP with Docker). See the `rc.local` setup below.
+
+## Docker Firewall (Pi 4 specific)
+
+If the peer Pi runs Docker, the FORWARD chain policy is set to DROP. You need
+explicit rules to allow USB traffic through:
+
+```bash
+# Add to /etc/rc.local (runs after Docker sets up its chains):
+iptables -I FORWARD 1 -i usb0 -o wlan0 -j ACCEPT
+iptables -I FORWARD 2 -i usb0 -o eth0 -j ACCEPT
+iptables -I FORWARD 3 -i wlan0 -o usb0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -I FORWARD 4 -i eth0 -o usb0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -I DOCKER-USER -i usb0 -j ACCEPT
+iptables -I DOCKER-USER -o usb0 -j ACCEPT
+```
 
 ## Limitations
 
