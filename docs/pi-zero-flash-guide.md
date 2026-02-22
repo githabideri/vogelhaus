@@ -39,7 +39,7 @@ Programm öffnen. Du siehst drei große Buttons.
 ### Schritt 2: Gerät auswählen
 
 - Klick auf **"Gerät auswählen"**
-- Wähle: **Raspberry Pi Zero W**
+- Wähle: **Raspberry Pi Zero** (⚠️ NICHT "Zero 2 W"! Im Imager heißt es nur "Zero")
 
 ### Schritt 3: Betriebssystem auswählen
 
@@ -131,7 +131,7 @@ dtoverlay=dwc2
 3. **Direkt NACH** `rootwait` ein Leerzeichen und dann einfügen:
 
 ```
-modules-load=dwc2
+modules-load=dwc2,g_ether
 ```
 
 4. Das Ergebnis sieht ungefähr so aus:
@@ -143,10 +143,12 @@ modules-load=dwc2
 
 **Nachher:**
 ```
-... rootwait modules-load=dwc2 quiet ...
+... rootwait modules-load=dwc2,g_ether quiet ...
 ```
 
 5. Prüfe: **Alles muss in EINER Zeile stehen!**
+
+> ⚠️ **WICHTIG:** `g_ether` MUSS dabei sein! Ohne g_ether gibt es beim ersten Boot kein USB-Netzwerk und man kommt nicht per SSH drauf. Später wird g_ether durch libcomposite ersetzt (für stabile MAC-Adressen).
 6. **Speichern** (Strg+S) und schließen
 
 ### Schritt 11: SD-Karte auswerfen
@@ -261,7 +263,7 @@ Keyboard: de
 
 Manual boot edits:
   config.txt:  dtoverlay=dwc2 (last line)
-  cmdline.txt: modules-load=dwc2 (after rootwait)
+  cmdline.txt: modules-load=dwc2,g_ether (after rootwait)
 ```
 
 ### USB Gadget Architektur (nach Post-Flash-Setup)
