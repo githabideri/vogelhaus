@@ -87,11 +87,21 @@ Both IR LEDs together draw ~1.8A from the 3.3V rail. The Pi Zero's 3.3V regulato
 
 ## Networking
 
-- Both Pis connect via WiFi to local network when available
+- Pi 4 connects via WiFi (5 GHz) or Ethernet to local network
 - Pi 4 has Tailscale for remote access
-- Pi Zero can be reached via SSH ProxyJump through Pi 4 (if Wi-Fi is up)
-- Streaming: Pi Zero → Pi 4 (local network) → Twitch (internet)
-- Out-of-band fallback: Pi 4 ↔ Pi Zero over GPIO UART (no IP required)
+- **Pi Zero gets internet via USB-Gadget (CDC Ethernet) through the Pi 4** — see [USB Gadget Setup](usb-gadget-setup.md)
+- Pi Zero has Tailscale for direct remote SSH access
+- Streaming: Pi Zero → Pi 4 (USB network) → Twitch (internet)
+- Out-of-band fallback: Pi 4 ↔ Pi Zero over GPIO UART (no IP required) — see [GPIO UART Setup](gpio-uart-setup.md)
+
+### USB Hub Topology (Pi 4)
+
+The Pi 4's VL805 USB controller supports per-port power switching via `uhubctl`:
+
+- **Hub 2 (USB 3.0):** SSD on Port 1
+- **Hub 1-1 (USB 2.0, VIA):** Zero Gadget on Port 2, Audio on Port 3
+
+At boot, `usb-zero-powercycle.service` cycles Hub 1-1 to ensure the Zero gets a clean start. The SSD on Hub 2 is unaffected.
 
 ## Power Architecture
 
