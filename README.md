@@ -47,6 +47,12 @@ A complete guide to building a smart birdhouse with:
                    └─────────┘
 ```
 
+### Data + control paths
+
+- **Primary media/data path:** Pi Zero ↔ Pi 4 over USB
+- **Recovery control path:** Pi 4 ↔ Pi Zero over 3-wire GPIO UART
+- **Remote management path:** Wi-Fi + Tailscale (when available)
+
 ## Project Structure
 
 ```
@@ -59,7 +65,7 @@ JOURNAL.md      Project diary (the fun parts)
 
 ## Quick Start
 
-See [docs/hardware.md](docs/hardware.md) for the full parts list and [docs/assembly.md](docs/assembly.md) for build instructions.
+See [docs/hardware.md](docs/hardware.md) for the full parts list, [docs/assembly.md](docs/assembly.md) for build instructions, and [docs/gpio-uart-setup.md](docs/gpio-uart-setup.md) for the serial fallback path.
 
 ## Software Stack (Pi 4)
 

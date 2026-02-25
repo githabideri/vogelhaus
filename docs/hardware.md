@@ -29,7 +29,16 @@
 - **Do NOT use Trixie** on Pi Zero W v1.1 — WiFi broken, USB gadget broken, generally unstable on ARMv6
 - `vcgencmd get_camera` shows `detected=0` but camera works fine
 - Use `rpicam-still` (not `libcamera-still`)
-- USB Gadget Mode configured (`dtoverlay=dwc2`, `modules-load=dwc2,g_ether`) but untested
+- USB Gadget Mode configured (`dtoverlay=dwc2`, `modules-load=dwc2,g_ether`)
+
+## Serial Fallback Link (Recommended)
+
+A dedicated 3-wire GPIO UART link between Pi 4 and Pi Zero is recommended as a recovery path:
+- independent from Wi-Fi
+- independent from USB networking
+- supports direct shell access via serial getty
+
+See [GPIO UART Setup](gpio-uart-setup.md) for wiring and service configuration.
 
 ## Night Vision Camera Module
 
@@ -78,10 +87,11 @@ Both IR LEDs together draw ~1.8A from the 3.3V rail. The Pi Zero's 3.3V regulato
 
 ## Networking
 
-- Both Pis connect via WiFi to local network
+- Both Pis connect via WiFi to local network when available
 - Pi 4 has Tailscale for remote access
-- Pi Zero accessible via SSH ProxyJump through Pi 4
+- Pi Zero can be reached via SSH ProxyJump through Pi 4 (if Wi-Fi is up)
 - Streaming: Pi Zero → Pi 4 (local network) → Twitch (internet)
+- Out-of-band fallback: Pi 4 ↔ Pi Zero over GPIO UART (no IP required)
 
 ## Power Architecture
 

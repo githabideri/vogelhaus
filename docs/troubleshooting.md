@@ -9,7 +9,7 @@ Raspberry Pi OS Trixie (Debian 13) is broken on Pi Zero W v1.1 (ARMv6):
 
 **Use Raspberry Pi OS Legacy Lite (Bookworm-based, 32-bit) instead.**
 
-See `pi_zero_w_trixie_issues_report.md` for the full investigation.
+See [Trixie Issues](trixie-issues.md) for the full investigation.
 
 ## Camera Not Detected
 
@@ -30,6 +30,25 @@ sudo systemctl stop mediamtx
 libcamera-still -o photo.jpg
 sudo systemctl start mediamtx
 ```
+
+## Serial Fallback (GPIO UART) Not Working
+
+If Wi-Fi/USB fail and no serial prompt appears:
+
+1. Verify wiring: GND↔GND, TX↔RX crossed
+2. Confirm UART enabled (`enable_uart=1`)
+3. Confirm target has serial getty enabled
+4. Ensure monitor side has no conflicting serial getty on the same UART
+5. Test with:
+
+```bash
+# monitor side
+screen /dev/ttyAMA0 115200
+```
+
+If needed, press Enter a few times to trigger the prompt.
+
+See [GPIO UART Setup](gpio-uart-setup.md) for full details.
 
 ## Pi Freezes in the Dark
 

@@ -30,8 +30,9 @@ The chosen design puts all electronics inside the birdhouse with a removable tec
 1. **Removable roof** — All tech mounted on the roof piece for easy maintenance
 2. **Single cable** — Only USB-C power cable exits the birdhouse
 3. **Short flex cables** — Cameras close to Pis, avoiding signal issues from long ribbon cables
-4. **Ventilation** — Air holes in the roof (Pi 4 heat = bird heating in winter 😄)
-5. **Weather protection** — Sealed enclosure, cable grommet for USB-C exit
+4. **UART fallback wiring** — Add a fixed 3-wire GPIO UART link between Pi 4 and Pi Zero for recovery access
+5. **Ventilation** — Air holes in the roof (Pi 4 heat = bird heating in winter 😄)
+6. **Weather protection** — Sealed enclosure, cable grommet for USB-C exit
 
 ### Camera Placement
 
@@ -42,6 +43,7 @@ The chosen design puts all electronics inside the birdhouse with a removable tec
 
 - [ ] Short camera flex cable for Pi Zero (10-15cm)
 - [ ] Short USB data cable Pi 4 → Pi Zero
+- [ ] 3-wire jumper set / soldered wires for UART fallback (GND, TX, RX)
 - [ ] Weatherproof housing/sealing for tech compartment
 - [ ] Mounting hardware for Pis inside the roof
 
@@ -54,7 +56,10 @@ The chosen design puts all electronics inside the birdhouse with a removable tec
 3. Connect cameras with short flex cables
 4. Route cameras to their positions (NoIR down, IMX708 toward entrance)
 5. Connect Pi Zero to Pi 4 via USB
-6. Drill ventilation holes
-7. Route USB-C power cable out through sealed grommet
-8. Test everything before sealing
-9. Mount birdhouse outside
+6. Add UART fallback wiring (Pi4 TX->Zero RX, Pi4 RX->Zero TX, GND->GND)
+7. Drill ventilation holes
+8. Route USB-C power cable out through sealed grommet
+9. Test everything before sealing
+10. Mount birdhouse outside
+
+For UART pin mapping and service setup, see [GPIO UART Setup](gpio-uart-setup.md).
