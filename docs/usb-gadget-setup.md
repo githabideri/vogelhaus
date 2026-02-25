@@ -64,9 +64,9 @@ Hub 1-1 (USB 2.0 VIA, per-port power switching)
 
 ## Kabel
 
-- **K1** (2m XLAYER Premium, USB-A → Micro-USB, mit Klettverschluss): Getestet und funktioniert ✅
-- Das Datenkabel muss am **mittleren** Micro-USB-Port des Zero stecken
+- Das Datenkabel (USB-A → Micro-USB) muss am **mittleren** Micro-USB-Port des Zero stecken (DATA)
 - Das Stromkabel (PWR) bleibt am **äußeren** Port
+- Empfehlung: qualitativ hochwertiges Datenkabel verwenden (nicht nur Ladekabel!)
 
 ## Fehlerbehebung
 
