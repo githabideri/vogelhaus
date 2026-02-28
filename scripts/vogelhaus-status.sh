@@ -85,6 +85,9 @@ echo "ZERO_UPTIME=$(uptime -p | sed 's/up //')"
 echo "ZERO_LOAD=$(awk '{printf "%s %s %s", $1, $2, $3}' /proc/loadavg)"
 echo "ZERO_STREAM=$(systemctl is-active vogl-noir-stream.service 2>/dev/null)"
 echo "ZERO_USB_IP=$(ip addr show usb0 2>/dev/null | awk '/inet /{print $2}' | head -1)"
+echo "ZERO_SD_USED=$(df -h / | awk 'NR==2{print $3}')"
+echo "ZERO_SD_TOTAL=$(df -h / | awk 'NR==2{print $2}')"
+echo "ZERO_SD_PCT=$(df -h / | awk 'NR==2{print $5}')"
 REMOTEOF
 ) && ZERO_OK="true"
 
@@ -103,6 +106,7 @@ MEDIAMTX=$(get MEDIAMTX); NOIR_BRIDGE=$(get NOIR_BRIDGE)
 TWITCH=$(get TWITCH); MIC_COUNT=$(get MIC_COUNT)
 ZERO_TEMP=$(get ZERO_TEMP); ZERO_UPTIME=$(get ZERO_UPTIME)
 ZERO_LOAD=$(get ZERO_LOAD); ZERO_STREAM=$(get ZERO_STREAM); ZERO_USB_IP=$(get ZERO_USB_IP)
+ZERO_SD_USED=$(get ZERO_SD_USED); ZERO_SD_TOTAL=$(get ZERO_SD_TOTAL); ZERO_SD_PCT=$(get ZERO_SD_PCT)
 
 # --- Emoji helpers ---
 svc_e() { [ "$1" = "active" ] && echo "🟢" || echo "🔴"; }
@@ -141,7 +145,8 @@ $TIMESTAMP
 • Pi Zero: $([ "$ZERO_OK" = "true" ] && echo "${ZERO_UPTIME:-?}" || echo "nicht erreichbar")
 
 💾 SPEICHER
-• SD-Karte: ${SD_USED:-?} / ${SD_TOTAL:-?} (${SD_PCT:-?})
+• SD-Karte Pi 4: ${SD_USED:-?} / ${SD_TOTAL:-?} (${SD_PCT:-?})
+• SD-Karte Zero: $([ "$ZERO_OK" = "true" ] && echo "${ZERO_SD_USED:-?} / ${ZERO_SD_TOTAL:-?} (${ZERO_SD_PCT:-?})" || echo "nicht erreichbar")
 • SSD: ${SSD_USED:-?} / ${SSD_TOTAL:-?} (${SSD_PCT:-?})
 • NAS: ${NAS_USED:-?} / ${NAS_TOTAL:-?} (${NAS_PCT:-?}) — ${NAS_FREE:-?} frei
 
