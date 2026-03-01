@@ -1,0 +1,3 @@
+# Re-configure usb0 when Zero USB gadget reconnects (e.g. after RUN-pin reset)
+# The MAC changes on each reconnect, so usb0 loses its IP.
+ACTION=="add", SUBSYSTEM=="net", KERNEL=="usb*", DRIVERS=="cdc_ether", RUN+="/usr/local/bin/usb-zero-reconnect.sh"
