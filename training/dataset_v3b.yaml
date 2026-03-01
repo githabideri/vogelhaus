@@ -1,0 +1,5 @@
+names:
+  0: blaumeise
+path: /home/duumus/vogelhaus/training/dataset_v3b
+train: train/images
+val: val/images

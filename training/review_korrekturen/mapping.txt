@@ -1,0 +1,43 @@
+# Review-Korrekturen Mapping
+# Nr | Neuer Name | Originalname | Korrektur
+#---
+01 | 01_soll_empty_ist_bird.jpg | 20250422_10_s0482_empty.jpg | Label sagte LEER, VHW sagt VOGEL
+02 | 02_soll_empty_ist_bird.jpg | 20250422_10_s2995_empty.jpg | Label sagte LEER, VHW sagt VOGEL
+03 | 03_soll_empty_ist_bird.jpg | 20250423_10_s1020_empty.jpg | Label sagte LEER, VHW sagt VOGEL
+04 | 04_soll_empty_ist_bird.jpg | 20250424_10_s1889_empty.jpg | Label sagte LEER, VHW sagt VOGEL
+05 | 05_soll_empty_ist_bird.jpg | 20250424_10_s3568_empty.jpg | Label sagte LEER, VHW sagt VOGEL
+06 | 06_soll_empty_ist_bird.jpg | 20250425_10_s1923_empty.jpg | Label sagte LEER, VHW sagt VOGEL
+07 | 07_soll_empty_ist_bird.jpg | local_s0182_empty.jpg | Label sagte LEER, VHW sagt VOGEL
+08 | 08_soll_empty_ist_bird.jpg | local_s0190_empty.jpg | Label sagte LEER, VHW sagt VOGEL
+09 | 09_soll_empty_ist_bird.jpg | local_s0443_empty.jpg | Label sagte LEER, VHW sagt VOGEL
+10 | 10_soll_empty_ist_bird.jpg | local_s0479_empty.jpg | Label sagte LEER, VHW sagt VOGEL
+11 | 11_soll_empty_ist_bird.jpg | local_s0516_empty.jpg | Label sagte LEER, VHW sagt VOGEL
+12 | 12_soll_empty_ist_bird.jpg | local_s0874_empty.jpg | Label sagte LEER, VHW sagt VOGEL
+13 | 13_soll_empty_ist_bird.jpg | local_s0955_empty.jpg | Label sagte LEER, VHW sagt VOGEL
+14 | 14_soll_empty_ist_bird.jpg | local_s0974_empty.jpg | Label sagte LEER, VHW sagt VOGEL
+15 | 15_soll_empty_ist_bird.jpg | local_s1012_empty.jpg | Label sagte LEER, VHW sagt VOGEL
+16 | 16_soll_empty_ist_bird.jpg | local_s1063_empty.jpg | Label sagte LEER, VHW sagt VOGEL
+17 | 17_soll_empty_ist_bird.jpg | local_s1186_empty.jpg | Label sagte LEER, VHW sagt VOGEL
+18 | 18_soll_empty_ist_bird.jpg | local_s1788_empty.jpg | Label sagte LEER, VHW sagt VOGEL
+19 | 19_soll_empty_ist_bird.jpg | local_s2129_empty.jpg | Label sagte LEER, VHW sagt VOGEL
+20 | 20_soll_empty_ist_bird.jpg | local_s2831_empty.jpg | Label sagte LEER, VHW sagt VOGEL
+21 | 21_soll_empty_ist_bird.jpg | local_s2932_empty.jpg | Label sagte LEER, VHW sagt VOGEL
+22 | 22_soll_empty_ist_bird.jpg | local_s2992_empty.jpg | Label sagte LEER, VHW sagt VOGEL
+23 | 23_soll_empty_ist_bird.jpg | local_s3076_empty.jpg | Label sagte LEER, VHW sagt VOGEL
+24 | 24_soll_empty_ist_bird.jpg | v1_001000_empty.jpg | Label sagte LEER, VHW sagt VOGEL
+25 | 25_soll_empty_ist_bird.jpg | v1_002000_empty.jpg | Label sagte LEER, VHW sagt VOGEL
+26 | 26_soll_empty_ist_bird.jpg | v1_005000_empty.jpg | Label sagte LEER, VHW sagt VOGEL
+27 | 27_soll_empty_ist_bird.jpg | v1_apr25_07_s0010_empty.jpg | Label sagte LEER, VHW sagt VOGEL
+28 | 28_soll_empty_ist_bird.jpg | v1_apr25_07_s0120_empty.jpg | Label sagte LEER, VHW sagt VOGEL
+29 | 29_soll_bird_ist_empty.jpg | 20250424_10_s1736_bird.jpg | Label sagte VOGEL, VHW sagt LEER
+30 | 30_soll_bird_ist_empty.jpg | 20250425_05_s2805_bird.jpg | Label sagte VOGEL, VHW sagt LEER
+31 | 31_soll_bird_ist_empty.jpg | 20250425_05_s2860_bird.jpg | Label sagte VOGEL, VHW sagt LEER
+32 | 32_soll_bird_ist_empty.jpg | local_s2208_bird.jpg | Label sagte VOGEL, VHW sagt LEER
+33 | 33_soll_bird_ist_empty.jpg | local_s2210_bird.jpg | Label sagte VOGEL, VHW sagt LEER
+34 | 34_soll_bird_ist_empty.jpg | local_s2212_bird.jpg | Label sagte VOGEL, VHW sagt LEER
+35 | 35_soll_bird_ist_empty.jpg | local_s2214_bird.jpg | Label sagte VOGEL, VHW sagt LEER
+36 | 36_soll_bird_ist_empty.jpg | local_s2216_bird.jpg | Label sagte VOGEL, VHW sagt LEER
+37 | 37_soll_bird_ist_empty.jpg | local_s2218_bird.jpg | Label sagte VOGEL, VHW sagt LEER
+38 | 38_soll_bird_ist_empty.jpg | v1_003652_bird.jpg | Label sagte VOGEL, VHW sagt LEER
+39 | 39_soll_bird_ist_empty.jpg | v1_003653_bird.jpg | Label sagte VOGEL, VHW sagt LEER
+40 | 40_soll_bird_ist_empty.jpg | v1_003654_bird.jpg | Label sagte VOGEL, VHW sagt LEER
