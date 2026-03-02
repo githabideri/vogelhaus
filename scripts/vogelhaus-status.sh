@@ -128,7 +128,7 @@ Standort „Thomas" | $TIMESTAMP
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 🐦 VOGELHAUS-BETRIEB
-• Twitch-Stream: $([ "$TWITCH" = "LIVE" ] && echo "🟢 LIVE" || echo "🔴 OFFLINE") auf twitch.tv/<YOUR_TWITCH_CHANNEL>
+• Twitch-Stream: $([ "$TWITCH" = "LIVE" ] && echo "🟢 LIVE" || echo "🔴 OFFLINE") auf twitch.tv/meisen_aus_urfahr
 • Hauptkamera: $(svc_e "$MEDIAMTX") MediaMTX $MEDIAMTX
 • Nachtsicht-Stream: $(svc_e "$NOIR_BRIDGE") noir-bridge $NOIR_BRIDGE
 • Mikrofon: $([ "${MIC_COUNT:-0}" -gt 0 ] 2>/dev/null && echo "🟢 Aktiv" || echo "🔴 Nicht erkannt")
