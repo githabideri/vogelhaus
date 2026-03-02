@@ -11,7 +11,7 @@ OUTPUT_DIR="${1:-./media}"
 mkdir -p "$OUTPUT_DIR"
 
 PI4_SSH="ssh -o ConnectTimeout=8 vogl"
-ZERO_SSH="ssh -o ConnectTimeout=8 -i $HOME/.ssh/id_ed25519_vogl vb-light@<TAILSCALE_ZERO>"
+ZERO_SSH="ssh -o ConnectTimeout=8 -i $HOME/.ssh/id_ed25519_vogl vb-light@100.108.95.56"
 
 TIMESTAMP=$(date -u +"%d. %B %Y, %H:%M UTC")
 SNAP_PI4="$OUTPUT_DIR/snap_pi4.jpg"

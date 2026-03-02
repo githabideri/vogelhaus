@@ -29,3 +29,6 @@ docs/SENSITIVE.md
 # Training artifacts (large)
 training/*/weights/
 !training/*/weights/.gitkeep
+
+# Camera snapshots
+media/
