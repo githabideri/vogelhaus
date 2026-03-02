@@ -47,9 +47,9 @@ df -h /mnt/nas 2>/dev/null | awk 'NR==2{printf "NAS_USED=%s\nNAS_TOTAL=%s\nNAS_P
 echo "ETH0_STATE=$(cat /sys/class/net/eth0/operstate 2>/dev/null || echo down)"
 echo "ETH0_IP=$(ip addr show eth0 2>/dev/null | awk '/inet /{print $2}' | head -1)"
 echo "ETH0_SPEED=$(cat /sys/class/net/eth0/speed 2>/dev/null || echo ?)"
-ESSID=$(iwconfig wlan0 2>/dev/null | grep -oP 'ESSID:"\K[^"]+' || echo "nicht_verbunden")
+ESSID=$(/sbin/iwconfig wlan0 2>/dev/null | grep -oP 'ESSID:"\K[^"]+' || echo "nicht_verbunden")
 echo "WLAN0_ESSID=$ESSID"
-echo "WLAN0_SIGNAL=$(iwconfig wlan0 2>/dev/null | grep -oP 'Signal level=\K[^ ]+' || echo ?)"
+echo "WLAN0_SIGNAL=$(/sbin/iwconfig wlan0 2>/dev/null | grep -oP 'Signal level=\K[^ ]+' || echo ?)"
 echo "TAILSCALE_IP=$(tailscale ip -4 2>/dev/null || echo ?)"
 echo "MEDIAMTX=$(systemctl is-active mediamtx 2>/dev/null)"
 echo "NOIR_BRIDGE=$(systemctl is-active noir-bridge 2>/dev/null)"
