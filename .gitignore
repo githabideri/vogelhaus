@@ -15,3 +15,17 @@ __pycache__/
 # Temp
 *.tmp
 *.bak
+
+# Environment (sensitive)
+.env
+*.local
+docs/SENSITIVE.md
+
+# Editor
+*.swp
+*.swo
+*~
+
+# Training artifacts (large)
+training/*/weights/
+!training/*/weights/.gitkeep

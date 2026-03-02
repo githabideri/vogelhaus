@@ -1,4 +1,4 @@
-path: /home/duumus/vogelhaus/training/dataset_v3
+path: .
 train: train/images
 val: val/images
 nc: 1

@@ -5,11 +5,11 @@ from pathlib import Path
 
 random.seed(42)
 
-WORK = Path.home() / "vogelhaus" / "v3b_work"
+WORK = Path(__file__).resolve().parent.parent  # repo root / "v3b_work"
 FRAMES = WORK / "motion_frames"
 IMAGES = WORK / "images_sampled"
 LABELS = WORK / "labels"
-V3_MODEL = Path.home() / "vogelhaus" / "training" / "blaumeise_v3" / "weights" / "best.pt"
+V3_MODEL = Path(__file__).resolve().parent.parent  # repo root / "training" / "blaumeise_v3" / "weights" / "best.pt"
 
 # Collect all frames
 all_frames = []
@@ -57,11 +57,11 @@ print(f"Images copied: {len(imgs)}")
 
 # ===== V3 INFERENCE =====
 print("\n=== Running v3 inference ===")
-sys.path.insert(0, str(Path.home() / "vogelhaus"))
-os.chdir(str(Path.home() / "vogelhaus"))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent  # repo root))
+os.chdir(str(Path(__file__).resolve().parent.parent  # repo root))
 
 # Activate venv
-venv = Path.home() / "vogelhaus" / "venv" / "lib" / "python3.12" / "site-packages"
+venv = Path(__file__).resolve().parent.parent  # repo root / "venv" / "lib" / "python3.12" / "site-packages"
 sys.path.insert(0, str(venv))
 
 from ultralytics import YOLO

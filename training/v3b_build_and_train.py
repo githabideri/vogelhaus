@@ -5,7 +5,7 @@ from pathlib import Path
 
 random.seed(42)
 
-HOME = Path.home() / "vogelhaus"
+HOME = Path(__file__).resolve().parent.parent  # repo root
 TRAINING = HOME / "training"
 
 # Sources
@@ -84,7 +84,7 @@ print(f"\nYAML: {yaml_path}")
 
 # === 4. Train ===
 print("\n=== Starting v3b training ===")
-venv = Path.home() / "vogelhaus" / "venv" / "lib" / "python3.12" / "site-packages"
+venv = Path(__file__).resolve().parent.parent  # repo root / "venv" / "lib" / "python3.12" / "site-packages"
 sys.path.insert(0, str(venv))
 
 from ultralytics import YOLO

@@ -13,13 +13,13 @@ import glob
 from pathlib import Path
 
 # Paths
-SOURCE_DIR = Path.home() / "vogelhaus" / "v3b_source"
-WORK_DIR = Path.home() / "vogelhaus" / "v3b_work"
+SOURCE_DIR = Path(__file__).resolve().parent.parent  # repo root / "v3b_source"
+WORK_DIR = Path(__file__).resolve().parent.parent  # repo root / "v3b_work"
 FRAMES_DIR = WORK_DIR / "motion_frames"
 LABELS_DIR = WORK_DIR / "labels"
 IMAGES_DIR = WORK_DIR / "images"
-V3_MODEL = Path.home() / "vogelhaus" / "training" / "blaumeise_v3" / "weights" / "best.pt"
-VENV_PYTHON = Path.home() / "vogelhaus" / "venv" / "bin" / "python"
+V3_MODEL = Path(__file__).resolve().parent.parent  # repo root / "training" / "blaumeise_v3" / "weights" / "best.pt"
+VENV_PYTHON = Path(__file__).resolve().parent.parent  # repo root / "venv" / "bin" / "python"
 
 # Create dirs
 for d in [WORK_DIR, FRAMES_DIR, LABELS_DIR, IMAGES_DIR]:

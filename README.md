@@ -56,16 +56,42 @@ A complete guide to building a smart birdhouse with:
 ## Project Structure
 
 ```
-docs/           Hardware specs, assembly guide, troubleshooting
+docs/
+├── getting-started.md          # Project overview and quick start
+├── hardware/                   # Hardware specifications and assembly
+│   ├── bill-of-materials.md    # Complete parts list and costs
+│   ├── assembly.md             # Build instructions and design
+│   └── camera-modules.md       # Camera specifications and setup
+├── setup/                      # Installation and configuration
+│   ├── pi-zero-flash.md        # Pi Zero OS installation guide
+│   ├── usb-gadget.md          # USB networking setup
+│   ├── uart-recovery.md       # Emergency serial access
+│   ├── streaming.md           # MediaMTX and Restreamer setup
+│   └── wsl-gpu-analysis.md    # Windows video analysis setup
+├── operations/                 # Daily operations and maintenance
+│   ├── troubleshooting.md     # Common issues and solutions
+│   ├── usb-failover.md        # Automatic network failover
+│   └── network-topology.md    # Complete network reference
+└── reference/                  # Technical specifications
+    ├── pi4-inventory.md        # Pi 4 system documentation
+    ├── pi-zero-inventory.md    # Pi Zero system documentation
+    ├── known-issues.md         # Documented problems and workarounds
+    └── video-analysis.md       # Motion detection and AI analysis
+
 config/         Configuration templates (mediamtx, boot config, etc.)
 scripts/        Capture, streaming, and utility scripts
-images/         Hardware photos, diagrams
+training/       Machine learning models and datasets
+.env.template   Environment configuration template
 JOURNAL.md      Project diary (the fun parts)
 ```
 
 ## Quick Start
 
-See [docs/hardware.md](docs/hardware.md) for the full parts list, [docs/assembly.md](docs/assembly.md) for build instructions, and [docs/gpio-uart-setup.md](docs/gpio-uart-setup.md) for the serial fallback path.
+1. **Get started**: Read [docs/getting-started.md](docs/getting-started.md) for project overview
+2. **Hardware**: Follow [docs/hardware/bill-of-materials.md](docs/hardware/bill-of-materials.md) and [docs/hardware/assembly.md](docs/hardware/assembly.md)
+3. **Setup**: Use [docs/setup/pi-zero-flash.md](docs/setup/pi-zero-flash.md) for installation
+4. **Configuration**: Copy `.env.template` to `.env` and customize for your environment
+5. **Troubleshooting**: Check [docs/operations/troubleshooting.md](docs/operations/troubleshooting.md) if needed
 
 ## Software Stack (Pi 4)
 
@@ -98,4 +124,6 @@ Built by humans (and one AI) in Vienna, Austria.
 
 ## License
 
-MIT
+AGPL-3.0 — see [LICENSE](LICENSE) file for details.
+
+This project is licensed under the GNU Affero General Public License v3.0, ensuring that any modifications or network-based usage remain open source.
