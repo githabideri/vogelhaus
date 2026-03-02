@@ -59,11 +59,10 @@ The chosen design puts all electronics inside the birdhouse with a removable tec
 4. Route cameras to their positions (both pointing at the nesting area from above, Camera A straight down, Camera B at an angle)
 5. Connect Pi Zero to Pi 4 via USB
 6. Add UART + RUN-pin wiring (Pi4 TX->Zero RX, Pi4 RX->Zero TX, GND->GND, Pi4 GPIO17->Zero RUN pad)
-7. Add RUN-pin reset wire (Pi4 GPIO 17/Pin 11 -> Pi Zero RUN pad) for remote reboot
-8. Drill ventilation holes
-9. Route USB-C power cable out through sealed grommet
-10. Test everything before sealing
-11. Mount birdhouse outside
+7. Drill ventilation holes
+8. Route USB-C power cable out through sealed grommet
+9. Test everything before sealing
+10. Mount birdhouse outside
 
 
 For RUN-pin reset wiring (4th wire, remote reboot capability), see [GPIO UART Setup — RUN-Pin Reset](../setup/uart-recovery.md#additional-wire-run-pin-reset-4th-wire).
