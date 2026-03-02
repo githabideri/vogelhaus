@@ -47,7 +47,7 @@ sudo systemctl restart mediamtx
 
 | Stream | URL | Source | Purpose |
 |--------|-----|---------|---------|
-| `vogl-cam` | `rtsp://127.0.0.1:8554/vogl-cam` | Pi 4 IMX708 | Day camera, entrance view |
+| `vogl-cam` | `rtsp://127.0.0.1:8554/vogl-cam` | Pi 4 IMX708 | Top-down view, nesting chamber |
 | `vogl-noir` | `rtsp://127.0.0.1:8554/vogl-noir` | Pi Zero NoIR | Night camera, nest area |
 
 ### Configuration File

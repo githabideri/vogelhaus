@@ -27,6 +27,62 @@ Pi 4 GND (pin 6)          -> Pi Zero GND (pin 6)
 - Both boards are 3.3V TTL, no level shifter needed
 - Keep cable length moderate and strain-relieved inside the roof
 
+
+## Additional Wire: RUN-Pin Reset (4th wire)
+
+For remote reset capability, add a 4th connection:
+
+```
+Pi 4 GPIO 17 (pin 11, inner row) -> Pi Zero RUN pad (square pad near the header)
+```
+
+### Physical Connection
+
+- **Wire colors in our build:** Orange (Zero end) → crimp adapter → Brown (Pi 4 end)
+- **Connection type:** Plugged (Dupont connectors), not soldered
+- **RUN pad location:** Square pad on the Pi Zero board near the GPIO header
+
+### Function
+
+Pulling GPIO 17 LOW for ~0.2 seconds triggers a hardware reset of the Pi Zero.
+The Pi Zero will restart and be back online in approximately 40 seconds.
+
+### Usage
+
+First, export and configure GPIO 17 (one-time setup, or via boot script/udev rule):
+
+```bash
+echo 17 > /sys/class/gpio/export
+echo out > /sys/class/gpio/gpio17/direction
+echo 1 > /sys/class/gpio/gpio17/value  # HIGH = normal operation
+```
+
+To reset the Pi Zero:
+
+```bash
+echo 0 > /sys/class/gpio/gpio17/value  # Pull LOW
+sleep 0.2
+echo 1 > /sys/class/gpio/gpio17/value  # Release
+```
+
+### Automatic USB Network Restoration
+
+After a RUN-pin reset, the USB network connection is automatically restored by:
+
+- **udev rule:** `/etc/udev/rules.d/90-usb-zero-network.rules`
+- **Helper script:** `/usr/local/bin/usb-zero-reconnect.sh`
+
+These detect the Pi Zero's USB gadget reappearance and reconfigure the network interface.
+
+### Integration
+
+The RUN-pin reset provides a hardware-level recovery mechanism when:
+- Pi Zero software is hung but Pi 4 is responsive
+- UART shell access is unavailable or not responding
+- USB network has failed but you want to trigger a clean restart
+
+**Note:** This is a hard reset — unsaved work on the Pi Zero will be lost.
+
 ## Software Setup
 
 ### 1) Enable UART in boot config

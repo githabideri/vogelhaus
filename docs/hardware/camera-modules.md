@@ -105,7 +105,7 @@ From successful birdhouse projects with this module:
 - **Day camera only** — has IR-cut filter, requires external IR for night vision
 - Use `libcamera-still` on Pi 4 (not `rpicam-still`)
 - MediaMTX locks camera access — stop service for manual capture
-- Suitable for entrance monitoring and overview shots
+- Suitable for nesting chamber monitoring from above and overview shots
 
 ## GPIO Control for IR LEDs (Advanced)
 
