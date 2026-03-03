@@ -14,6 +14,7 @@ import os
 import subprocess
 import json
 from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 from pathlib import Path
 from typing import Optional, List
 import asyncio
@@ -131,7 +132,7 @@ async def generate_status(mode: str = 'o') -> dict:
             'mode': mode,
             'text': report_text,
             'photos': photos,
-            'timestamp': datetime.now().isoformat()
+            'timestamp': datetime.now(ZoneInfo('Europe/Vienna')).isoformat()
         }
     except subprocess.TimeoutExpired:
         return {
@@ -146,7 +147,7 @@ async def generate_status(mode: str = 'o') -> dict:
 
 async def save_report(report: dict):
     """Save report to filesystem"""
-    timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+    timestamp = datetime.now(ZoneInfo('Europe/Vienna')).strftime('%Y-%m-%d_%H-%M-%S')
     filename = f"{timestamp}_{report['mode']}.json"
     filepath = REPORTS_DIR / filename
     
@@ -189,7 +190,7 @@ async def switch_camera(target: str) -> dict:
             'success': result.returncode in (0, 2),  # 0=switched, 2=already active
             'returncode': result.returncode,
             'message': result.stdout + result.stderr,
-            'timestamp': datetime.now().isoformat()
+            'timestamp': datetime.now(ZoneInfo('Europe/Vienna')).isoformat()
         }
     except Exception as e:
         return {
@@ -304,7 +305,7 @@ async def dashboard(request: Request):
         "request": request,
         "status": status,
         "active_camera": active_camera,
-        "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        "timestamp": datetime.now(ZoneInfo('Europe/Vienna')).strftime('%Y-%m-%d %H:%M:%S')
     })
 
 @app.get("/reports", response_class=HTMLResponse)
@@ -353,7 +354,7 @@ async def api_status(mode: str, token: str = Depends(verify_token)):
 async def api_get_camera(token: str = Depends(verify_token)):
     """Get active camera"""
     active = await get_active_camera()
-    return {"active": active, "timestamp": datetime.now().isoformat()}
+    return {"active": active, "timestamp": datetime.now(ZoneInfo('Europe/Vienna')).isoformat()}
 
 @app.post("/api/camera/{target}")
 async def api_switch_camera(target: str, token: str = Depends(verify_token)):
@@ -420,6 +421,62 @@ async def api_logs_stream(token: str = Depends(verify_token)):
 # ============================================================
 # MAIN
 # ============================================================
+
+@app.get("/internal/streaming/status")
+async def internal_streaming_status():
+    """Check if Twitch stream is running"""
+    try:
+        result = subprocess.run(
+            ['docker', 'exec', 'restreamer', 'ps', 'aux'],
+            capture_output=True,
+            text=True,
+            timeout=5
+        )
+        if 'rtmp://live.twitch.tv' in result.stdout:
+            return {"status": "live"}
+        else:
+            return {"status": "offline"}
+    except:
+        return {"status": "unknown"}
+
+@app.post("/internal/streaming/{action}")
+async def internal_streaming_control(action: str):
+    """Start or stop Twitch streaming"""
+    if action not in ('start', 'stop'):
+        raise HTTPException(400, "Invalid action")
+    
+    process_id = "restreamer-ui:egress:twitch:16ee3bc7-a98d-421c-9863-83c693ba4c0a"
+    
+    try:
+        # Build JSON payload
+        json_payload = '{"command":"' + action + '"}'
+        url = f"http://localhost:8080/api/v3/process/{process_id}/command"
+        
+        # Build wget command as list (avoid shell escaping hell)
+        wget_args = [
+            "wget", "-q", "-O-",
+            "--user=admin",
+            "--password=duhundduvogl",
+            "--header=Content-Type: application/json",
+            f"--post-data={json_payload}",
+            url
+        ]
+        
+        # Execute via docker exec
+        result = subprocess.run(
+            ["docker", "exec", "restreamer"] + wget_args,
+            capture_output=True,
+            text=True,
+            timeout=10
+        )
+        
+        if result.returncode == 0:
+            return {"success": True, "message": f"Streaming {action}ed"}
+        else:
+            return {"success": False, "message": f"Failed: {result.stderr}"}
+    except Exception as e:
+        raise HTTPException(500, str(e))
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=PORT)
