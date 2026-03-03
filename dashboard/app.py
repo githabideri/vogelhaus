@@ -161,19 +161,20 @@ async def get_active_camera() -> str:
     """Get currently active camera (pi4 or noir)"""
     try:
         result = subprocess.run(
-            ['docker', 'exec', 'restreamer', 'grep', '-oP', 'rtsp://[^"]+', '/core/config/db.json'],
+            ['docker', 'exec', 'restreamer', 'cat', '/core/config/db.json'],
             capture_output=True,
             text=True,
             timeout=5
         )
-        if 'vogl-cam' in result.stdout:
-            return 'pi4'
-        elif 'vogl-noir' in result.stdout:
+        # Check noir first (more specific match)
+        if '172.20.0.1:8554/vogl-noir' in result.stdout:
             return 'noir'
+        elif '172.20.0.1:8554/vogl-cam' in result.stdout:
+            return 'pi4'
         return 'unknown'
     except:
         return 'unknown'
-
+        return 'unknown'
 async def switch_camera(target: str) -> dict:
     """Switch camera (pi4 or noir)"""
     try:
@@ -245,6 +246,53 @@ async def aggregate_logs(lines_per_source: int = 30) -> dict:
 # ============================================================
 # ROUTES — WEB UI
 # ============================================================
+
+
+# ============================================================
+# INTERNAL ROUTES (NO AUTH) - For localhost Web UI calls
+# ============================================================
+
+@app.get("/internal/status/{mode}")
+async def internal_status(mode: str):
+    """Generate status without auth (for UI)"""
+    if mode not in ('bb', 'o'):
+        raise HTTPException(400, "Invalid mode")
+    status = await generate_status(mode)
+    await save_report(status)
+    return {"text": status.get('text', 'Error'), "success": status.get('success', False)}
+
+@app.get("/internal/camera")
+async def internal_camera():
+    """Get active camera without auth"""
+    active = await get_active_camera()
+    return {"active": active}
+
+@app.post("/internal/camera/{target}")
+async def internal_switch(target: str):
+    """Switch camera without auth"""
+    if target not in ('pi4', 'noir'):
+        raise HTTPException(400, "Invalid target")
+    result = await switch_camera(target)
+    return result
+
+@app.get("/internal/logs")
+async def internal_logs(service: Optional[str] = None):
+    """Get logs without auth"""
+    if service:
+        if service.startswith('docker:'):
+            container = service.split(':', 1)[1]
+            log_lines = await get_docker_logs(container, 50)
+        else:
+            log_lines = await get_service_logs(service, 50)
+        return {"service": service, "logs": "\n".join(log_lines)}
+    else:
+        logs = await aggregate_logs(30)
+        formatted = []
+        for svc, lines in logs.items():
+            for line in lines[:10]:
+                if line.strip():
+                    formatted.append(f"[{svc}] {line}")
+        return {"logs": "\n".join(formatted)}
 
 @app.get("/", response_class=HTMLResponse)
 async def dashboard(request: Request):
@@ -375,3 +423,35 @@ async def api_logs_stream(token: str = Depends(verify_token)):
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=PORT)
+
+# ============================================================
+# INTERNAL ROUTES (NO AUTH) - For Web UI
+# ============================================================
+
+@app.get("/internal/status/{mode}")
+async def internal_status(mode: str):
+    if mode not in ('bb', 'o'):
+        raise HTTPException(400, "Invalid mode")
+    status = await generate_status(mode)
+    return {"text": status.get('text', 'Error'), "success": status.get('success')}
+
+@app.get("/internal/camera")
+async def internal_camera():
+    active = await get_active_camera()
+    return {"active": active}
+
+@app.post("/internal/camera/{target}")
+async def internal_switch(target: str):
+    if target not in ('pi4', 'noir'):
+        raise HTTPException(400, "Invalid target")
+    result = await switch_camera(target)
+    return result
+
+@app.get("/internal/logs")
+async def internal_logs():
+    logs = await aggregate_logs(30)
+    formatted = []
+    for service, lines in logs.items():
+        for line in lines[:10]:
+            formatted.append(f"[{service}] {line}")
+    return {"logs": "\n".join(formatted)}
