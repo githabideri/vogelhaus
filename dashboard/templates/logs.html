@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📜 System-Logs — Vogelhaus Dashboard</title>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script src="https://unpkg.com/alpinejs@3.13.5/dist/cdn.min.js" defer></script>
+    <link rel="stylesheet" href="/static/dashboard.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🐦 K.u.K. Vogelhaus-Amt</h1>
+            <p class="subtitle">System-Logs</p>
+        </div>
+    </header>
+
+    <div class="container" x-data="{ 
+        filter: '', 
+        autoRefresh: false,
+        selectedService: 'all'
+    }">
+        <nav>
+            <a href="/">Dashboard</a>
+            <a href="/reports">Berichte</a>
+            <a href="/logs" class="active">Logs</a>
+            <a href="https://www.twitch.tv/meisen_aus_urfahr" target="_blank">📺 Twitch</a>
+        </nav>
+
+        <div class="card">
+            <div class="card-title">📜 System-Logs</div>
+            
+            <!-- Controls -->
+            <div class="log-controls">
+                <div class="control-group">
+                    <label>Service:</label>
+                    <select x-model="selectedService" class="select">
+                        <option value="all">Alle Services</option>
+                        <optgroup label="Pi4 systemd">
+                            <option value="mediamtx">mediamtx</option>
+                            <option value="noir-bridge">noir-bridge</option>
+                            <option value="usb-failover">usb-failover</option>
+                            <option value="tailscaled">tailscaled</option>
+                            <option value="netdata">netdata</option>
+                        </optgroup>
+                        <optgroup label="Docker">
+                            <option value="docker:restreamer">restreamer</option>
+                            <option value="docker:portainer">portainer</option>
+                        </optgroup>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label>Filter:</label>
+                    <input type="text" 
+                           x-model="filter" 
+                           placeholder="Suchbegriff..."
+                           class="input">
+                </div>
+
+                <div class="control-group">
+                    <label>
+                        <input type="checkbox" x-model="autoRefresh">
+                        Auto-Refresh (5s)
+                    </label>
+                </div>
+
+                <button class="btn btn-secondary" 
+                        hx-get="/api/logs"
+                        hx-target="#log-content"
+                        hx-swap="innerHTML">
+                    🔄 Aktualisieren
+                </button>
+            </div>
+
+            <!-- Log Content -->
+            <div class="log-viewer" id="log-content">
+                <div style="text-align: center; padding: 2rem; color: var(--text-dim);">
+                    Klicken Sie "Aktualisieren" um Logs zu laden
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .log-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: #0a0f1a;
+            border-radius: 0.5rem;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .control-group label {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            font-weight: 500;
+        }
+        .select, .input {
+            padding: 0.5rem 0.75rem;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 0.375rem;
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+        .select {
+            min-width: 180px;
+        }
+        .input {
+            min-width: 250px;
+        }
+        .log-viewer {
+            background: #0a0f1a;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            line-height: 1.5;
+            max-height: 600px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .log-line {
+            padding: 0.25rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .log-line:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+        .log-timestamp {
+            color: var(--text-dim);
+        }
+        .log-level-error {
+            color: var(--danger);
+        }
+        .log-level-warn {
+            color: var(--warning);
+        }
+        .log-level-info {
+            color: var(--success);
+        }
+    </style>
+
+    <script>
+        // Auto-refresh logic
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('logRefresh', () => ({
+                init() {
+                    setInterval(() => {
+                        if (this.autoRefresh) {
+                            htmx.trigger('#log-content', 'refresh');
+                        }
+                    }, 5000);
+                }
+            }));
+        });
+    </script>
+</body>
+</html>

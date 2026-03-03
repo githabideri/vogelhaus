@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📋 Berichte — Vogelhaus Dashboard</title>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <link rel="stylesheet" href="/static/dashboard.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🐦 K.u.K. Vogelhaus-Amt</h1>
+            <p class="subtitle">Bericht-Archiv</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <nav>
+            <a href="/">Dashboard</a>
+            <a href="/reports" class="active">Berichte</a>
+            <a href="/logs">Logs</a>
+            <a href="https://www.twitch.tv/meisen_aus_urfahr" target="_blank">📺 Twitch</a>
+        </nav>
+
+        <div class="card">
+            <div class="card-title">📋 Letzte 30 Berichte</div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Zeitstempel</th>
+                            <th>Typ</th>
+                            <th>Status</th>
+                            <th>Aktion</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for report in reports %}
+                        <tr>
+                            <td>{{ report.timestamp }}</td>
+                            <td>
+                                <span class="badge {% if report.mode == 'o' %}badge-primary{% else %}badge-secondary{% endif %}">
+                                    {{ report.mode.upper() }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge {% if report.success %}badge-success{% else %}badge-danger{% endif %}">
+                                    {% if report.success %}✓{% else %}✗{% endif %}
+                                </span>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm" 
+                                        hx-get="/api/reports/{{ report.filename }}"
+                                        hx-target="#report-detail"
+                                        hx-swap="innerHTML">
+                                    Anzeigen
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card" style="margin-top: 1.5rem;">
+            <div class="card-title">📄 Bericht-Detail</div>
+            <div id="report-detail" class="status-text">
+                <p style="color: var(--text-dim); text-align: center;">Wählen Sie einen Bericht aus der Tabelle</p>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        thead {
+            background: #0a0f1a;
+            border-bottom: 2px solid var(--border);
+        }
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+        }
+        th {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-dim);
+        }
+        tr:not(:last-child) {
+            border-bottom: 1px solid var(--border);
+        }
+        tbody tr:hover {
+            background: rgba(59, 130, 246, 0.05);
+        }
+        .btn-sm {
+            padding: 0.4rem 1rem;
+            font-size: 0.85rem;
+        }
+        .badge-primary { background: var(--accent); color: white; }
+        .badge-secondary { background: var(--border); color: var(--text); }
+        .table-container {
+            overflow-x: auto;
+        }
+    </style>
+</body>
+</html>

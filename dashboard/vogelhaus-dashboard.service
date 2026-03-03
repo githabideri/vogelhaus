@@ -1,0 +1,21 @@
+[Unit]
+Description=K.u.K. Vogelhaus Dashboard
+After=network.target mediamtx.service docker.service
+Wants=mediamtx.service docker.service
+
+[Service]
+Type=simple
+User=vogl
+WorkingDirectory=/home/vogl/vogelhaus/dashboard
+Environment="PYTHONUNBUFFERED=1"
+EnvironmentFile=-/home/vogl/vogelhaus/.env
+ExecStart=/usr/bin/python3 /home/vogl/vogelhaus/dashboard/app.py
+Restart=on-failure
+RestartSec=10
+
+# Security
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
