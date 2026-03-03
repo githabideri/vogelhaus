@@ -216,20 +216,18 @@ async def get_service_logs(service: str, lines: int = 50) -> List[str]:
         return []
 
 async def get_docker_logs(container: str, lines: int = 50) -> List[str]:
-    """Get Docker container logs"""
+    """Get Docker container logs (stderr + stdout)"""
     try:
+        # Run docker logs with stderr redirected to stdout
         result = subprocess.run(
-            ['docker', 'logs', '--tail', str(lines), container, '2>&1'],
+            ['sh', '-c', f'docker logs --tail {lines} {container} 2>&1'],
             capture_output=True,
             text=True,
-            timeout=10,
-            shell=True
+            timeout=10
         )
-        # Combine stdout and stderr
-        combined = result.stdout + result.stderr
-        return [line for line in combined.split('\n') if line.strip()]
-    except:
-        return []
+        return [line for line in result.stdout.split('\n') if line.strip()]
+    except Exception as e:
+        return [f"Error getting logs: {str(e)}"]
 
 async def aggregate_logs(lines_per_source: int = 30) -> dict:
     """Aggregate logs from all services"""
@@ -490,18 +488,20 @@ async def internal_status_stream(mode: str):
     async def event_stream():
         import asyncio
         
-        # Start status script
+        # Start status script with line-buffered output
         proc = await asyncio.create_subprocess_exec(
-            STATUS_SCRIPT, mode,
+            'stdbuf', '-oL', STATUS_SCRIPT, mode,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.STDOUT
         )
         
         # Stream output line by line
+        buffer = ""
         async for line in proc.stdout:
             line_text = line.decode('utf-8')
             # Skip FOTO_ lines (internal metadata)
             if not line_text.startswith('FOTO_'):
+                # Send each line immediately
                 yield f"data: {line_text}\n\n"
         
         await proc.wait()
