@@ -13,9 +13,9 @@ SNAP_DIR="/tmp/vogelhaus-status"
 mkdir -p "$SNAP_DIR"
 
 ZERO_SSH="ssh -o ConnectTimeout=5 -o BatchMode=yes vb-light@10.42.0.2"
-ZERO_TS="ssh -o ConnectTimeout=5 -o BatchMode=yes -i ~/.ssh/id_ed25519 vb-light@<TAILSCALE_ZERO>"
+ZERO_TS="ssh -o ConnectTimeout=5 -o BatchMode=yes -i ~/.ssh/id_ed25519 vb-light@100.108.95.56"
 
-TIMESTAMP=$(date -u +"%d.%m.%Y %H:%M UTC")
+TIMESTAMP=$(date +"%d.%m.%Y %H:%M CET")
 DATE_SHORT=$(date -u +"%d.%m. %H:%M")
 
 # ---- PI4 LOCAL DATA ----
@@ -124,7 +124,7 @@ Standort „Thomas" | $TIMESTAMP
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 🐦 VOGELHAUS-BETRIEB
-• Twitch-Stream: $([ "$TWITCH" = "LIVE" ] && echo "🟢 LIVE" || echo "🔴 OFFLINE") auf twitch.tv/<YOUR_TWITCH_CHANNEL>
+• Twitch-Stream: $([ "$TWITCH" = "LIVE" ] && echo "🟢 LIVE" || echo "🔴 OFFLINE") auf twitch.tv/meisen_aus_urfahr
 • Hauptkamera: $(svc_e "$MEDIAMTX") MediaMTX $MEDIAMTX
 • Nachtsicht-Bridge: $(svc_e "$NOIR_BRIDGE") noir-bridge $NOIR_BRIDGE
 • Mikrofon: $([ "$MIC_COUNT" -gt 0 ] 2>/dev/null && echo "🟢 Aktiv" || echo "🔴 Nicht erkannt")
