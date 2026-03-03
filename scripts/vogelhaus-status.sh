@@ -7,15 +7,28 @@
 
 set -uo pipefail
 
-OUTPUT_DIR="${1:-./media}"
+MODE_DEFAULT="o"
+MODE_ARG="${1:-$MODE_DEFAULT}"
+
+if [[ "$MODE_ARG" == "o" || "$MODE_ARG" == "bb" ]]; then
+    MODE="$MODE_ARG"
+    OUTPUT_DIR="${2:-./media}"
+else
+    MODE="$MODE_DEFAULT"
+    OUTPUT_DIR="$MODE_ARG"
+fi
+
 mkdir -p "$OUTPUT_DIR"
+
+TIMESTAMP=$(TZ="Europe/Vienna" date +"%d. %B %Y, %H:%M %Z")
+SNAP_TS=$(TZ="Europe/Vienna" date +"%Y%m%d-%H%M")
+SNAP_PI4="$OUTPUT_DIR/snap_pi4_${SNAP_TS}.jpg"
+SNAP_NOIR="$OUTPUT_DIR/snap_noir_${SNAP_TS}.jpg"
+SNAP_PI4_LINK="$OUTPUT_DIR/snap_pi4.jpg"
+SNAP_NOIR_LINK="$OUTPUT_DIR/snap_noir.jpg"
 
 PI4_SSH="ssh -o ConnectTimeout=8 vogl"
 ZERO_SSH="ssh -o ConnectTimeout=8 -i $HOME/.ssh/id_ed25519_vogl vb-light@100.108.95.56"
-
-TIMESTAMP=$(date -u +"%d. %B %Y, %H:%M UTC")
-SNAP_PI4="$OUTPUT_DIR/snap_pi4.jpg"
-SNAP_NOIR="$OUTPUT_DIR/snap_noir.jpg"
 
 # Helper: get value from key=value data (handles spaces in values)
 get() { echo "$ALL_DATA" | grep "^$1=" | tail -1 | sed "s/^$1=//"; }
@@ -30,6 +43,13 @@ $PI4_SSH "ffmpeg -y -rtsp_transport tcp -i rtsp://127.0.0.1:8554/vogl-cam -frame
 NOIR_FOTO="FEHLER"
 $PI4_SSH "ffmpeg -y -rtsp_transport tcp -i rtsp://127.0.0.1:8554/vogl-noir -frames:v 1 -q:v 2 /tmp/snap_noir.jpg 2>/dev/null" && \
     scp -q vogl:/tmp/snap_noir.jpg "$SNAP_NOIR" 2>/dev/null && NOIR_FOTO="OK"
+
+if [ -f "$SNAP_PI4" ]; then
+    ln -sf "$SNAP_PI4" "$SNAP_PI4_LINK"
+fi
+if [ -f "$SNAP_NOIR" ]; then
+    ln -sf "$SNAP_NOIR" "$SNAP_NOIR_LINK"
+fi
 
 echo "📊 Pi 4 Daten..." >&2
 
@@ -169,3 +189,5 @@ $([ -f "$SNAP_NOIR" ] && echo "NOIR=$SNAP_NOIR")
 REPORT
 
 echo "✅ Bericht fertig." >&2
+echo "🗂️ Modus: $MODE | Ausgabe: $OUTPUT_DIR" >&2
+echo "🖼️ Fotos: ${SNAP_PI4##*/} | ${SNAP_NOIR##*/}" >&2
