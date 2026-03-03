@@ -84,12 +84,7 @@
     </style>
 </head>
 <body>
-    <div class="loading-overlay" id="loading-overlay">
-        <div style="text-align: center;">
-            <div class="loading-spinner"></div>
-            <p style="color: white; margin-top: 1rem;">Lade...</p>
-        </div>
-    </div>
+    
 
     <header>
         <div class="container">
@@ -216,32 +211,42 @@
         });
 
         function loadReport(mode) {
-            const overlay = document.getElementById('loading-overlay');
             const statusEl = document.getElementById('status-text');
+            statusEl.textContent = 'Starte Bericht-Generierung...';
             
-            overlay.classList.add('active');
-            statusEl.textContent = 'Lade...';
+            // Use EventSource for Server-Sent Events
+            const eventSource = new EventSource(`/internal/status/${mode}/stream`);
+            let output = '';
             
-            fetch(`/internal/status/${mode}`)
-                .then(r => r.json())
-                .then(data => {
-                    if (data.text) {
-                        statusEl.textContent = data.text;
-                    } else {
-                        statusEl.textContent = 'Fehler beim Laden';
-                    }
-                })
-                .catch(err => {
-                    statusEl.textContent = 'Fehler: ' + err.message;
-                })
-                .finally(() => {
-                    overlay.classList.remove('active');
-                });
+            eventSource.onmessage = function(event) {
+                if (event.data === '__COMPLETE__') {
+                    eventSource.close();
+                    // Fetch final formatted report
+                    fetch(`/internal/status/${mode}`)
+                        .then(r => r.json())
+                        .then(data => {
+                            if (data.text) {
+                                statusEl.textContent = data.text;
+                            }
+                        });
+                } else {
+                    // Append live output
+                    output += event.data;
+                    statusEl.textContent = output;
+                    // Auto-scroll to bottom
+                    statusEl.scrollTop = statusEl.scrollHeight;
+                }
+            };
+            
+            eventSource.onerror = function(err) {
+                eventSource.close();
+                statusEl.textContent = 'Fehler beim Laden des Berichts';
+            };
         }
 
         function controlStreaming(action) {
-            const overlay = document.getElementById('loading-overlay');
-            overlay.classList.add('active');
+            
+            
             
             fetch(`/internal/streaming/${action}`, { method: 'POST' })
                 .then(r => r.json())
@@ -258,7 +263,7 @@
                     alert('Fehler: ' + err.message);
                 })
                 .finally(() => {
-                    overlay.classList.remove('active');
+                    
                 });
         }
     </script>

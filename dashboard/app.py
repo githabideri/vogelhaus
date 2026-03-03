@@ -219,12 +219,15 @@ async def get_docker_logs(container: str, lines: int = 50) -> List[str]:
     """Get Docker container logs"""
     try:
         result = subprocess.run(
-            ['docker', 'logs', '--tail', str(lines), container],
+            ['docker', 'logs', '--tail', str(lines), container, '2>&1'],
             capture_output=True,
             text=True,
-            timeout=10
+            timeout=10,
+            shell=True
         )
-        return result.stdout.split('\n')
+        # Combine stdout and stderr
+        combined = result.stdout + result.stderr
+        return [line for line in combined.split('\n') if line.strip()]
     except:
         return []
 
@@ -476,6 +479,44 @@ async def internal_streaming_control(action: str):
             return {"success": False, "message": f"Failed: {result.stderr}"}
     except Exception as e:
         raise HTTPException(500, str(e))
+
+
+@app.get("/internal/status/{mode}/stream")
+async def internal_status_stream(mode: str):
+    """Stream status generation live (Server-Sent Events)"""
+    if mode not in ('bb', 'o'):
+        raise HTTPException(400, "Invalid mode")
+    
+    async def event_stream():
+        import asyncio
+        
+        # Start status script
+        proc = await asyncio.create_subprocess_exec(
+            STATUS_SCRIPT, mode,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.STDOUT
+        )
+        
+        # Stream output line by line
+        async for line in proc.stdout:
+            line_text = line.decode('utf-8')
+            # Skip FOTO_ lines (internal metadata)
+            if not line_text.startswith('FOTO_'):
+                yield f"data: {line_text}\n\n"
+        
+        await proc.wait()
+        
+        # Signal completion
+        yield f"data: __COMPLETE__\n\n"
+    
+    return StreamingResponse(
+        event_stream(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+        }
+    )
 
 
 if __name__ == "__main__":
