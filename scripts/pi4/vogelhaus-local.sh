@@ -16,7 +16,7 @@ ZERO_SSH="ssh -o ConnectTimeout=5 -o BatchMode=yes vb-light@10.42.0.2"
 ZERO_TS="ssh -o ConnectTimeout=5 -o BatchMode=yes -i ~/.ssh/id_ed25519 vb-light@100.108.95.56"
 
 TIMESTAMP=$(date +"%d.%m.%Y %H:%M CET")
-DATE_SHORT=$(date -u +"%d.%m. %H:%M")
+DATE_SHORT=$(date +"%d.%m. %H:%M")
 
 # ---- PI4 LOCAL DATA ----
 PI4_TEMP=$(vcgencmd measure_temp | sed 's/temp=//;s/'"'"'C//')
