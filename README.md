@@ -72,6 +72,7 @@ docs/
 │   ├── troubleshooting.md     # Common issues and solutions
 │   ├── usb-failover.md        # Automatic network failover
 │   └── network-topology.md    # Complete network reference
+├── analysis-2025-04-23.md      # Detailed video analysis with YOLO comparison
 └── reference/                  # Technical specifications
     ├── pi4-inventory.md        # Pi 4 system documentation
     ├── pi-zero-inventory.md    # Pi Zero system documentation
@@ -113,10 +114,11 @@ The Pi Zero runs a minimal headless setup — just SSH and the camera.
 | Early 2024 | External SSD added for video storage |
 | Spring 2025 | MediaMTX added, ~25 days of continuous recording captured |
 | Early 2026 | Pi Zero W added with NoIR camera, IR-LED research, birdhouse construction started |
+| Mar 2026 | GPU motion detection pipeline (491k peaks from 847h), YOLO bird classification validated |
 
 ## Status
 
-🚧 **Work in progress** — Cameras work, streaming pipeline is being configured, birdhouse construction is underway.
+🐦 **Active** — Two cameras running (day + NoIR night vision), live streaming to Twitch, 850+ hours of video recorded, AI-powered bird detection pipeline (YOLO v3/v3b) validated with 97.6% model agreement.
 
 ## Credits
 
